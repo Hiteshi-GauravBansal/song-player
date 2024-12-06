@@ -1,0 +1,67 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .container {
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  
+  audio {
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  #lyrics-container {
+    margin-top: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    background: #f9f9f9;
+  }
+  
+  #lyrics-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  #lyrics-list li {
+    padding: 5px 0;
+    font-size: 16px;
+    color: #555;
+  }
+  
+  #lyrics-list li.active {
+    color: #000;
+    font-weight: bold;
+  }
+  #drop-zone {
+    border: 2px dashed #aaa;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s;
+  }
+  
+  #drop-zone.dragover {
+    background-color: #e0ffe0;
+  }
+  
