@@ -9,8 +9,21 @@
   <body>
     <div class="container">
       <h1>Music Player with Lyrics</h1>
-      <div id="drop-zone">
-        <p>Drag & Drop your audio and LRC file here</p>
+      <div id="audio-drop-zone" class="drop-zone">
+        <p>Drag & Drop your audio file here</p>
+        <p id="audio-file-name">No audio file selected</p>
+      </div>
+      <div id="hls-url-section">
+        <input
+          type="text"
+          id="hls-url"
+          placeholder="Enter HLS URL (e.g., .m3u8)"
+        />
+        <button id="load-hls">Load HLS URL</button>
+      </div>
+      <div id="lrc-drop-zone" class="drop-zone">
+        <p>Drag & Drop your LRC file here</p>
+        <p id="lrc-file-name">No LRC file selected</p>
       </div>
       <audio id="audio-player" controls>
         Your browser does not support the audio element.
@@ -19,6 +32,7 @@
         <ul id="lyrics-list"></ul>
       </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="script.js"></script>
   </body>
 </html>

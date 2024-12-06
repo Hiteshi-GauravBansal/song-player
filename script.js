@@ -1,46 +1,54 @@
-const dropZone = document.getElementById('drop-zone');
+const audioDropZone = document.getElementById('audio-drop-zone');
+const lrcDropZone = document.getElementById('lrc-drop-zone');
 const audioPlayer = document.getElementById('audio-player');
+const audioFileName = document.getElementById('audio-file-name');
+const lrcFileName = document.getElementById('lrc-file-name');
+const hlsUrlInput = document.getElementById('hls-url');
+const loadHlsButton = document.getElementById('load-hls');
 const lyricsList = document.getElementById('lyrics-list');
 
 let lyrics = []; // Store parsed lyrics with timestamps
 
-// Handle drag-and-drop events
-dropZone.addEventListener('dragover', (event) => {
+// Common function to handle dragover
+function handleDragOver(event) {
   event.preventDefault();
-  dropZone.classList.add('dragover');
-});
+  event.target.classList.add('dragover');
+}
 
-dropZone.addEventListener('dragleave', () => {
-  dropZone.classList.remove('dragover');
-});
+// Common function to handle dragleave
+function handleDragLeave(event) {
+  event.target.classList.remove('dragover');
+}
 
-dropZone.addEventListener('drop', (event) => {
+// Handle drop for audio files
+audioDropZone.addEventListener('dragover', handleDragOver);
+audioDropZone.addEventListener('dragleave', handleDragLeave);
+audioDropZone.addEventListener('drop', (event) => {
   event.preventDefault();
-  dropZone.classList.remove('dragover');
+  audioDropZone.classList.remove('dragover');
 
-  const files = event.dataTransfer.files;
-  let audioFile = null;
-  let lrcFile = null;
-
-  // Identify audio and LRC files
-  for (const file of files) {
-    if (file.type.startsWith('audio/')) {
-      audioFile = file;
-    } else if (file.name.endsWith('.lrc')) {
-      lrcFile = file;
-    }
-  }
-
+  const audioFile = [...event.dataTransfer.files].find(file => file.type.startsWith('audio/'));
   if (audioFile) {
+    audioFileName.textContent = `Selected: ${audioFile.name}`;
     loadAudioFile(audioFile);
   } else {
-    alert('Please drop an audio file.');
+    alert('Please drop a valid audio file.');
   }
+});
 
+// Handle drop for LRC files
+lrcDropZone.addEventListener('dragover', handleDragOver);
+lrcDropZone.addEventListener('dragleave', handleDragLeave);
+lrcDropZone.addEventListener('drop', (event) => {
+  event.preventDefault();
+  lrcDropZone.classList.remove('dragover');
+
+  const lrcFile = [...event.dataTransfer.files].find(file => file.name.endsWith('.lrc'));
   if (lrcFile) {
+    lrcFileName.textContent = `Selected: ${lrcFile.name}`;
     loadLRCFile(lrcFile);
   } else {
-    alert('Please drop an LRC file.');
+    alert('Please drop a valid LRC file.');
   }
 });
 
@@ -61,6 +69,32 @@ function loadLRCFile(file) {
   };
   reader.readAsText(file);
 }
+
+// Load HLS URL
+loadHlsButton.addEventListener('click', () => {
+  const hlsUrl = hlsUrlInput.value.trim();
+  if (!hlsUrl) {
+    alert('Please enter a valid HLS URL.');
+    return;
+  }
+
+  if (Hls.isSupported()) {
+    const hls = new Hls();
+    hls.loadSource(hlsUrl);
+    hls.attachMedia(audioPlayer);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      audioPlayer.play();
+    });
+    audioFileName.textContent = `Playing from HLS URL: ${hlsUrl}`;
+  } else if (audioPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+    // For Safari or native HLS support
+    audioPlayer.src = hlsUrl;
+    audioPlayer.play();
+    audioFileName.textContent = `Playing from HLS URL: ${hlsUrl}`;
+  } else {
+    alert('Your browser does not support HLS playback.');
+  }
+});
 
 // Parse LRC content
 function parseLRC(lrcContent) {
